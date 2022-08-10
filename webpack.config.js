@@ -10,6 +10,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.png/,
+        type: 'asset/resource',
+      },
+      {
         test: /\.(jsx|js)$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
