@@ -6,9 +6,13 @@ export  const StyledRunner = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  .hide {
+    display: none;
+  }
   .canvas {
     overflow: hidden;
     position: relative;
+
   }
   .score {
     position: absolute;
@@ -25,7 +29,6 @@ export  const StyledRunner = styled.div`
   }
 
   .ground {
-    --left: 0;
     position: absolute;
     width: 300%;
     bottom: 0;
