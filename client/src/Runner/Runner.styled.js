@@ -47,6 +47,6 @@ export  const StyledRunner = styled.div`
     position:absolute;
     left: calc(var(--left) * 1%);
     height: 30%;
-    bottom: calc(var(--bottom) * 1%);
+    bottom: 0;
   }
 `;

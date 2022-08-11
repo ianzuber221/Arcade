@@ -9,6 +9,7 @@ import {
   getCssVariable,
 } from './cssFunctions';
 import { updatePlayer, setupPlayer} from './player';
+import { updateObstacle, setupObstacle} from './obstacle';
 
 export default function Runner({ setGameState }) {
   // Canvas setup
@@ -17,6 +18,7 @@ export default function Runner({ setGameState }) {
   const ground2 = useRef();
   const scoreElement = useRef();
   const startRef = useRef();
+  const playerRef = useRef();
   const canvasWidth = 100;
   const canvasHeight = 30;
   const scaleCanvas = () => {
@@ -51,9 +53,10 @@ export default function Runner({ setGameState }) {
     }
     const delta = time - lastTime;
     updateGround(delta, speedScale);
-    updatePlayer(delta, speedScale);
+    updatePlayer(playerRef.current, delta, speedScale);
     updateSpeedScale(delta);
     updateScore(delta);
+    updateObstacle(canvasRef.current, delta, speedScale);
     lastTime = time;
     window.requestAnimationFrame(update);
   }
@@ -93,7 +96,6 @@ export default function Runner({ setGameState }) {
   // Score handling
   const updateScore = (delta) => {
     score += delta * 0.01;
-    console.log(score);
     scoreElement.current.innerText = Math.floor(score);
   }
 
@@ -104,7 +106,8 @@ export default function Runner({ setGameState }) {
     speedScale = 1;
     score = 0;
     startRef.current.classList.add('hide');
-    setupPlayer();
+    setupPlayer(playerRef.current);
+    setupObstacle(canvasRef.current)
     setGround();
   }
   document.addEventListener('keydown', startGame, { once: true });
@@ -118,7 +121,7 @@ export default function Runner({ setGameState }) {
         <div className="start" ref={startRef}>Press Any Key To Start</div>
         <img src={ground} className="ground" ref={ground1} />
         <img src={ground} className="ground" ref={ground2} />
-        <img src={player} className="player" />
+        <img src={player} className="player" ref={playerRef} />
       </div>
     </StyledRunner>
   );
