@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/', router);
 
-app.use(express.static(path.join(__dirname, '../client/public')))
+app.use(express.static(path.join(__dirname, '../client/public')));
 
 app.listen(process.env.PORT);
 console.log(`Listening at http://localhost:${process.env.PORT}`);

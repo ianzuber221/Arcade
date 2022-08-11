@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useEffect, useRef, useLayoutEffect } from 'react';
+import axios from 'axios';
 import { StyledRunner } from './Runner.styled';
 import ground from '../../images/ground.png';
 import player from '../../images/player-stationary.png';
@@ -8,10 +9,10 @@ import {
   setCssVariable,
   getCssVariable,
 } from './cssFunctions';
-import { updatePlayer, setupPlayer} from './player';
-import { updateObstacle, setupObstacle} from './obstacle';
+import { updatePlayer, setupPlayer, getPlayerRect, playerLose } from './player';
+import { updateObstacle, setupObstacle, getObstacleRects } from './obstacle';
 
-export default function Runner({ setGameState }) {
+export default function Runner({ setGameState, currentUser }) {
   // Canvas setup
   const canvasRef = useRef();
   const ground1 = useRef();
@@ -57,6 +58,7 @@ export default function Runner({ setGameState }) {
     updateSpeedScale(delta);
     updateScore(delta);
     updateObstacle(canvasRef.current, delta, speedScale);
+    if (checkLose()) return handleLose();
     lastTime = time;
     window.requestAnimationFrame(update);
   }
@@ -97,7 +99,7 @@ export default function Runner({ setGameState }) {
   const updateScore = (delta) => {
     score += delta * 0.01;
     scoreElement.current.innerText = Math.floor(score);
-  }
+  };
 
   // Starts the game
   const startGame = () => {
@@ -107,9 +109,52 @@ export default function Runner({ setGameState }) {
     score = 0;
     startRef.current.classList.add('hide');
     setupPlayer(playerRef.current);
-    setupObstacle(canvasRef.current)
+    setupObstacle(canvasRef.current);
     setGround();
-  }
+  };
+
+  // Lose logic
+  const checkLose = () => {
+    const playerRect = getPlayerRect(playerRef.current);
+    return getObstacleRects().some((rect) => isCollision(rect, playerRect));
+  };
+
+  const isCollision = (rect1, rect2) => {
+    return (
+      rect1.left < rect2.right &&
+      rect1.top < rect2.bottom &&
+      rect1.right > rect2.left &&
+      rect1.bottom > rect2.top
+    );
+  };
+
+  const handleLose = () => {
+    const data = {
+      userId: currentUser.uid,
+      score: parseInt(scoreElement.current.innerText),
+      userEmail: currentUser.email,
+    };
+
+    const config = {
+      method: 'post',
+      url: ' /scores',
+      headers: {},
+      data,
+    };
+
+    axios(config)
+      .then((response) => {
+        console.log('Score posted', response.data);
+      })
+      .catch((error) => {
+        console.log('Could not post score', error);
+      });
+    playerLose(playerRef.current);
+    setTimeout(() => {
+      document.addEventListener('keydown', startGame, { once: true });
+    });
+  };
+
   document.addEventListener('keydown', startGame, { once: true });
 
   useEffect(scaleCanvas, []);
@@ -117,8 +162,12 @@ export default function Runner({ setGameState }) {
   return (
     <StyledRunner>
       <div className="canvas" ref={canvasRef}>
-        <div className="score" ref={scoreElement}>0</div>
-        <div className="start" ref={startRef}>Press Any Key To Start</div>
+        <div className="score" ref={scoreElement}>
+          0
+        </div>
+        <div className="start" ref={startRef}>
+          Press Any Key To Start
+        </div>
         <img src={ground} className="ground" ref={ground1} />
         <img src={ground} className="ground" ref={ground2} />
         <img src={player} className="player" ref={playerRef} />

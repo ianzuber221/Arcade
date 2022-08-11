@@ -1,6 +1,7 @@
 import StationaryPlayer from '../../images/player-stationary.png';
 import playerRun0 from '../../images/player-run-0.png';
 import playerRun1 from '../../images/player-run-1.png';
+import playerLoseSrc from '../../images/player-lose.png';
 import {
   incrementCssVariable,
   getCssVariable,
@@ -20,9 +21,9 @@ export function setupPlayer(player) {
   frame = 0;
   currentFrameTime = 0;
   yVelocity = 0;
-  setCssVariable(player, "--bottom", 0)
-  document.removeEventListener("keydown", onJump)
-  document.addEventListener("keydown", onJump)
+  setCssVariable(player, '--bottom', 0);
+  document.removeEventListener('keydown', onJump);
+  document.addEventListener('keydown', onJump);
 }
 
 export function updatePlayer(player, delta, speedScale) {
@@ -59,4 +60,11 @@ function onJump(e) {
   if (e.code !== 'Space' || jumping) return;
   yVelocity = jump;
   jumping = true;
+}
+
+export function getPlayerRect(player) {
+  return player.getBoundingClientRect();
+}
+export function playerLose(player) {
+  player.src = playerLoseSrc;
 }

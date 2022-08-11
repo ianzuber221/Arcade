@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack --mode=development",
+    "start": "webpack --mode=development --watch",
     "build": "webpack --mode=production",
     "dev": "webpack serve --open",
     "dev-start": "nodemon server/index.js"
@@ -22,10 +22,15 @@
   },
   "homepage": "https://github.com/ianzuber221/Arcade#readme",
   "dependencies": {
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
+    "firebase": "^9.9.2",
+    "mongoose": "^6.5.2",
     "react": "^18.2.0",
+    "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
     "styled-components": "^5.3.5"
   },
