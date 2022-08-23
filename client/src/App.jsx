@@ -30,7 +30,7 @@ export default function App() {
           <button
             type="button"
             className="back"
-            onClick={() => setGameState(null)}
+            onClick={() => setGameState('home')}
           >
             Back
           </button>
@@ -85,10 +85,6 @@ export default function App() {
           </div>
         </Container>
       );
-      if (currentUser) {
-
-        setGameState('home');
-      }
   }
 
   return renderedPage;
